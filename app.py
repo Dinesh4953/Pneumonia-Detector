@@ -11,14 +11,15 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from datetime import datetime
 from uuid import uuid4
-
+import requests
+import tempfile
+import os
 # ------------------ APP SETUP ------------------
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "DINESH@2006"
 
 UPLOAD_FOLDER = "static/uploads"
-import tempfile
-import os
+
 
 MODEL_URL = "https://huggingface.co/dinesh49/pneumonia-resnet50/resolve/main/pneumonia_resnet50.tflite"
 # BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -45,7 +46,6 @@ interpreter = None
 input_details = None
 output_details = None
 
-import requests
 
 def download_model_if_needed():
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
