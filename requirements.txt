@@ -1,0 +1,17 @@
+# Core ML
+tensorflow==2.16.1
+numpy==1.26.4
+scikit-learn
+Pillow
+huggingface-hub
+
+# Web App
+flask
+werkzeug
+
+# Image Processing (Grad-CAM)
+opencv-python-headless
+
+# PDF Report
+reportlab
+gunicorn
