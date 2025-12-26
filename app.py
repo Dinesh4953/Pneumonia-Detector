@@ -21,10 +21,23 @@ import tempfile
 import os
 
 MODEL_URL = "https://huggingface.co/dinesh49/pneumonia-resnet50/resolve/main/pneumonia_resnet50.tflite"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "models", "pneumonia_resnet50.tflite")
+# BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# MODEL_PATH = os.path.join(BASE_DIR, "models", "pneumonia_resnet50.tflite")
+MODEL_PATH = "/tmp/pneumonia_resnet50.tflite"
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def ensure_model_ready():
+    if not os.path.exists(MODEL_PATH):
+        print("⬇️ Downloading TFLite model...")
+        r = requests.get(MODEL_URL, stream=True)
+        r.raise_for_status()
+        with open(MODEL_PATH, "wb") as f:
+            for chunk in r.iter_content(8192):
+                f.write(chunk)
+        print("✅ Model downloaded")
+ensure_model_ready()
+
 
 # ------------------ MODEL (LAZY LOAD) ------------------
 # ------------------ TFLITE MODEL (LAZY LOAD) ------------------
@@ -35,6 +48,7 @@ output_details = None
 import requests
 
 def download_model_if_needed():
+    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
     if not os.path.exists(MODEL_PATH):
         print("Downloading TFLite model from Hugging Face...")
         r = requests.get(MODEL_URL, stream=True)
@@ -47,7 +61,6 @@ def download_model_if_needed():
 
 def load_model_once():
     global interpreter, input_details, output_details
-
     if interpreter is None:
         print("🧠 Loading TFLite model...")
         interpreter = tf.lite.Interpreter(model_path=MODEL_PATH)
